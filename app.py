@@ -86,8 +86,10 @@ class TextGeneration(Resource):
     def post(self):
         """Generate text based on a prompt"""
         data = request.get_json()
+        if not data:
+            return {'error': 'Request body is required'}, 400
+            
         prompt = data.get('prompt')
-        
         if not prompt:
             return {'error': 'Prompt is required'}, 400
         
@@ -113,8 +115,10 @@ class CodeGeneration(Resource):
     def post(self):
         """Generate code based on a prompt"""
         data = request.get_json()
+        if not data:
+            return {'error': 'Request body is required'}, 400
+            
         prompt = data.get('prompt')
-
         if not prompt:
             return {'error': 'Prompt is required'}, 400
 
@@ -140,9 +144,12 @@ class TextClassification(Resource):
     def post(self):
         """Classify text into provided categories"""
         data = request.get_json()
+        if not data:
+            return {'error': 'Request body is required'}, 400
+            
         text = data.get('text')
         categories = data.get('categories')
-
+        
         if not text or not categories:
             return {'error': 'Text and categories are required'}, 400
 
