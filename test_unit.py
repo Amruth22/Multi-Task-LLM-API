@@ -11,7 +11,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
     
     server_thread = None
     server_started = False
-    base_url = "http://127.0.0.1:8080/api/v1"  # Use localhost for client connections
+    base_url = "http://localhost:8080/api/v1"  # Use localhost for client connections
     server_thread = None
     server_started = False
     base_url = "http://0.0.0.0:8080/api/v1"
@@ -27,8 +27,8 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
     def _run_server(cls):
         """Run Flask server in thread"""
         try:
-            # Server binds to 0.0.0.0 but we connect via 127.0.0.1
-            app.run(host='127.0.0.1', port=8080, debug=False, use_reloader=False, threaded=True)
+            # Use localhost for better Windows compatibility
+            app.run(host='localhost', port=8080, debug=False, use_reloader=False, threaded=True)
         # Wait for server to start
         cls._wait_for_server()
         
@@ -41,7 +41,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         while time.time() - start_time < timeout:
             try:
                 # Use localhost for health check
-                response = requests.get("http://127.0.0.1:8080/api/v1/health", timeout=2)
+                response = requests.get("http://localhost:8080/api/v1/health", timeout=2)
         try:
             app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False, threaded=True)
         except Exception as e:
@@ -225,7 +225,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         print("\n📚 Testing Swagger Documentation...")
         
         # Test swagger endpoint
-        response = requests.get("http://127.0.0.1:8080/swagger/")
+        response = requests.get("http://localhost:8080/swagger/")
         self.assertEqual(response.status_code, 200)
         
         # Check if it's HTML content (Swagger UI)
