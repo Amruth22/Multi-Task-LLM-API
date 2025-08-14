@@ -11,7 +11,7 @@ from gemini_wrapper import generate_text, generate_code, classify_text
 class TestMultiTaskLLMAPI(unittest.TestCase):
     
     server_thread = None
-    base_url = "http://localhost:8081/api/v1"
+    server_started = False
     base_url = "http://0.0.0.0:8080/api/v1"
     
     @classmethod
@@ -34,7 +34,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         try:
             app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False, threaded=True)
         except Exception as e:
-                response = requests.get("http://localhost:8081/api/v1/health", timeout=2)
+            print(f"❌ Server failed to start: {e}")
     
     @classmethod
     def _wait_for_server(cls, timeout=30):
@@ -193,7 +193,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         # Test generate_text function
         text_result = generate_text("Say 'test successful' in one sentence.")
         self.assertIsInstance(text_result, str)
-        response = requests.get("http://localhost:8081/swagger/")
+        self.assertTrue(len(text_result) > 0)
         print(f"✅ Direct text generation: {text_result[:30]}...")
         
         # Test generate_code function  
@@ -225,7 +225,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
     def test_09_rate_limiting(self):
         """Test rate limiting functionality"""
         print("\n⏱️ Testing Rate Limiting...")
-    print("📡 Testing against live server: http://localhost:8081")
+        
         # Make multiple rapid requests to test rate limiting
         payload = {"prompt": "Hello"}
         
@@ -237,8 +237,8 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
                 json=payload,
                 headers={'Content-Type': 'application/json'}
             )
-        print("🌐 Live server tested at: http://localhost:8081")
-        print("📊 Swagger UI: http://localhost:8081/swagger/")
+            responses.append(response.status_code)
+            time.sleep(0.1)  # Small delay between requests
         
         # All requests should succeed (within rate limit)
         success_count = sum(1 for status in responses if status == 200)
