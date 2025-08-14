@@ -15,7 +15,7 @@ import requests
 import json
 import time
 
-# API Configuration
+BASE_URL = "http://localhost:8081/api/v1"
 BASE_URL = "http://0.0.0.0:8081/api/v1"
 HEADERS = {'Content-Type': 'application/json'}
 
@@ -212,7 +212,7 @@ def main():
         ("Code Generation", test_code_generation),
         ("Text Classification", test_text_classification),
         ("Error Handling", test_error_handling)
-    ]
+    print(f"📊 Swagger UI: http://localhost:8081/swagger/")
     
     results = []
     for test_name, test_func in tests:
