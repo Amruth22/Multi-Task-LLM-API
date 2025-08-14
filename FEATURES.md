@@ -127,15 +127,17 @@ GOOGLE_API_KEY=your_google_api_key_here
 - **Per Minute**: 10 requests per minute per endpoint
 
 ### Retry Configuration
-- **Max Retries**: 5 attempts
-- **Initial Delay**: 1 second
-- **Max Delay**: 60 seconds
+```bash
+python app.py
+# Runs on http://0.0.0.0:8081
+```
 - **Strategy**: Exponential backoff
 
 ## 📊 API Response Format
-
-### Success Response
-```json
+```bash
+waitress-serve --host=0.0.0.0 --port=8081 app:app
+# Production WSGI server with better performance
+```
 {
   "generated_text": "Generated content here...",
   "generated_code": "def example():\n    pass",
@@ -172,7 +174,7 @@ GOOGLE_API_KEY=your_google_api_key_here
 While this is the simplified version, potential enhancements could include:
 
 - **Authentication**: User authentication and API keys
-- **Usage Analytics**: Request tracking and usage statistics
+- **Per Minute**: 10 requests per minute per endpoint
 - **Caching**: Response caching for improved performance
 - **Database Integration**: Persistent storage for requests/responses
 - **Multi-Model Support**: Support for additional AI models
@@ -195,4 +197,6 @@ This simplified API provides a clean foundation for:
 - **Extension**: Building more complex features on top
 - **Integration**: Embedding AI capabilities in existing applications
 
-The codebase is designed to be readable, maintainable, and easily extensible for future enhancements.
+4. **Run the server**: `python app.py`
+5. **Test the API**: Use `python example_usage.py`
+6. **Explore documentation**: Visit `http://0.0.0.0:8081/swagger/`
