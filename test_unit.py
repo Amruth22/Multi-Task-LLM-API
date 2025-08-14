@@ -11,7 +11,7 @@ from gemini_wrapper import generate_text, generate_code, classify_text
 class TestMultiTaskLLMAPI(unittest.TestCase):
     
     server_thread = None
-    base_url = "http://0.0.0.0:8081/api/v1"
+    server_started = False
     base_url = "http://0.0.0.0:8080/api/v1"
     
     @classmethod
@@ -25,7 +25,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         
         # Wait for server to start
         cls._wait_for_server()
-            app.run(host='0.0.0.0', port=8081, debug=False, use_reloader=False, threaded=True)
+        
         print(f"✅ Test server started at {cls.base_url}")
     
     @classmethod
@@ -34,7 +34,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         try:
             app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False, threaded=True)
         except Exception as e:
-                response = requests.get("http://127.0.0.1:8081/api/v1/health", timeout=2)
+            print(f"❌ Server failed to start: {e}")
     
     @classmethod
     def _wait_for_server(cls, timeout=30):
@@ -51,6 +51,12 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
             time.sleep(0.5)
         
         raise RuntimeError(f"Server failed to start within {timeout} seconds")
+    
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up after tests"""
+        print("\n🧹 Cleaning up test environment...")
+        # Note: Server thread will be cleaned up automatically as it's a daemon thread
     
     def test_01_env_api_key_configured(self):
         """Test that the GOOGLE_API_KEY is properly configured in .env"""
@@ -193,7 +199,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         # Test generate_code function  
         code_result = generate_code("Write a simple hello world function in Python")
         self.assertIsInstance(code_result, str)
-        response = requests.get("http://127.0.0.1:8081/swagger/")
+        self.assertTrue(len(code_result) > 0)
         self.assertIn('def', code_result.lower())
         print(f"✅ Direct code generation: {code_result[:30]}...")
         
@@ -225,7 +231,7 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         
         # Make several requests quickly
         responses = []
-    print("📡 Testing against live server: http://0.0.0.0:8081")
+        for i in range(5):
             response = requests.post(
                 f'{self.base_url}/generate/text',
                 json=payload,
@@ -237,8 +243,8 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         # All requests should succeed (within rate limit)
         success_count = sum(1 for status in responses if status == 200)
         self.assertGreater(success_count, 0, "At least some requests should succeed")
-        print("🌐 Live server tested at: http://0.0.0.0:8081")
-        print("📊 Swagger UI: http://0.0.0.0:8081/swagger/")
+        
+        print(f"✅ Rate limiting test completed - {success_count}/{len(responses)} requests succeeded")
 
 if __name__ == '__main__':
     print("🚀 Starting Multi-Task LLM API Unit Tests...")
