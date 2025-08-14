@@ -7,9 +7,11 @@ import requests
 from dotenv import load_dotenv
 from app import app
 from gemini_wrapper import generate_text, generate_code, classify_text
-
 class TestMultiTaskLLMAPI(unittest.TestCase):
     
+    server_thread = None
+    server_started = False
+    base_url = "http://127.0.0.1:8080/api/v1"  # Use localhost for client connections
     server_thread = None
     server_started = False
     base_url = "http://0.0.0.0:8080/api/v1"
@@ -22,7 +24,11 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
         # Start the Flask server in a separate thread
         cls.server_thread = threading.Thread(target=cls._run_server, daemon=True)
         cls.server_thread.start()
-        
+    def _run_server(cls):
+        """Run Flask server in thread"""
+        try:
+            # Server binds to 0.0.0.0 but we connect via 127.0.0.1
+            app.run(host='127.0.0.1', port=8080, debug=False, use_reloader=False, threaded=True)
         # Wait for server to start
         cls._wait_for_server()
         
@@ -30,7 +36,12 @@ class TestMultiTaskLLMAPI(unittest.TestCase):
     
     @classmethod
     def _run_server(cls):
-        """Run Flask server in thread"""
+        """Wait for server to be ready"""
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            try:
+                # Use localhost for health check
+                response = requests.get("http://127.0.0.1:8080/api/v1/health", timeout=2)
         try:
             app.run(host='0.0.0.0', port=8080, debug=False, use_reloader=False, threaded=True)
         except Exception as e:
