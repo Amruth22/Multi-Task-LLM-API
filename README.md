@@ -55,27 +55,26 @@ pip install -r requirements.txt
 ```
 
 4. **Configure environment**
-- **Swagger UI**: http://0.0.0.0:8081/swagger/
-- **API Base**: http://0.0.0.0:8081/api/v1/
-- **Health Check**: http://0.0.0.0:8081/api/v1/health
+Create a `.env` file in the project root:
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
 ```
 
 5. **Run the application**
 ```bash
-### Base URL
+python app.py
 ```
-http://0.0.0.0:8081/api/v1
-```
+
 6. **Access the API**
-- **Swagger UI**: http://0.0.0.0:8080/swagger/
-- **API Base**: http://0.0.0.0:8080/api/v1/
-- **Health Check**: http://0.0.0.0:8080/api/v1/health
+- **Swagger UI**: http://0.0.0.0:8081/swagger/
+- **API Base**: http://0.0.0.0:8081/api/v1/
+- **Health Check**: http://0.0.0.0:8081/api/v1/health
 
 ## 📚 API Reference
 
 ### Base URL
 ```
-http://0.0.0.0:8080/api/v1
+http://0.0.0.0:8081/api/v1
 ```
 
 ### Endpoints
@@ -205,13 +204,13 @@ Multi-Task-LLM-API/
 ├── .env.example       # Environment configuration template
 └── README.md          # Project documentation
 ```
-waitress-serve --host=0.0.0.0 --port=8081 app:app
+
 ## 📦 Dependencies
 
 ### Core Dependencies
 ```
 Flask                 # Web framework
-waitress-serve --host=0.0.0.0 --port=8081 --threads=4 app:app
+Flask-RESTX          # Swagger UI and API documentation
 Flask-Limiter        # Rate limiting
 Flask-CORS           # Cross-origin resource sharing
 python-dotenv        # Environment variable management
@@ -234,14 +233,14 @@ waitress             # WSGI server for production
 
 ### Using Waitress (Recommended)
 ```bash
-waitress-serve --host=0.0.0.0 --port=8080 app:app
+waitress-serve --host=0.0.0.0 --port=8081 app:app
 ```
 
 ### Alternative Production Setup
 ```bash
 # Run with production settings
 export FLASK_ENV=production
-waitress-serve --host=0.0.0.0 --port=8080 --threads=4 app:app
+waitress-serve --host=0.0.0.0 --port=8081 --threads=4 app:app
 ```
 
 ## ⚠️ Error Handling
@@ -288,9 +287,9 @@ For support, questions, or feature requests:
 
 <div align="center">
 
-[![Swagger](https://img.shields.io/badge/API_Docs-Swagger-green.svg)](http://0.0.0.0:8081/swagger/)
+**Built with ❤️ using Google Gemini 2.0 Flash**
 
-[![Swagger](https://img.shields.io/badge/API_Docs-Swagger-green.svg)](http://0.0.0.0:8080/swagger/)
+[![Swagger](https://img.shields.io/badge/API_Docs-Swagger-green.svg)](http://0.0.0.0:8081/swagger/)
 [![Tests](https://img.shields.io/badge/Tests-Comprehensive-blue.svg)](#-testing)
 [![Rate_Limiting](https://img.shields.io/badge/Rate_Limiting-Smart-orange.svg)](#-rate-limiting--retry-logic)
 
