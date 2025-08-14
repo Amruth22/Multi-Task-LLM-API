@@ -74,13 +74,12 @@ def health_check():
 @ns_generate.route('/text')
 class TextGeneration(Resource):
     @ns_generate.expect(text_generation_model)
-    @ns_generate.marshal_with(text_response_model)
     @ns_generate.doc(
         description='Generate text based on a given prompt using Google Gemini 2.0 Flash',
         responses={
-            200: 'Success - Text generated',
-            400: 'Bad Request - Missing prompt',
-            500: 'Internal Server Error'
+            200: ('Success - Text generated', text_response_model),
+            400: ('Bad Request - Missing prompt', error_model),
+            500: ('Internal Server Error', error_model)
         }
     )
     @limiter.limit("10 per minute")
@@ -102,13 +101,12 @@ class TextGeneration(Resource):
 @ns_generate.route('/code')
 class CodeGeneration(Resource):
     @ns_generate.expect(code_generation_model)
-    @ns_generate.marshal_with(code_response_model)
     @ns_generate.doc(
         description='Generate code based on a given prompt using Google Gemini 2.0 Flash with optimized settings for code generation',
         responses={
-            200: 'Success - Code generated',
-            400: 'Bad Request - Missing prompt',
-            500: 'Internal Server Error'
+            200: ('Success - Code generated', code_response_model),
+            400: ('Bad Request - Missing prompt', error_model),
+            500: ('Internal Server Error', error_model)
         }
     )
     @limiter.limit("10 per minute")
@@ -130,13 +128,12 @@ class CodeGeneration(Resource):
 @ns_classify.route('/text')
 class TextClassification(Resource):
     @ns_classify.expect(text_classification_model)
-    @ns_classify.marshal_with(classification_response_model)
     @ns_classify.doc(
         description='Classify text into one of the provided categories using Google Gemini 2.0 Flash',
         responses={
-            200: 'Success - Text classified',
-            400: 'Bad Request - Missing text or categories',
-            500: 'Internal Server Error'
+            200: ('Success - Text classified', classification_response_model),
+            400: ('Bad Request - Missing text or categories', error_model),
+            500: ('Internal Server Error', error_model)
         }
     )
     @limiter.limit("10 per minute")
