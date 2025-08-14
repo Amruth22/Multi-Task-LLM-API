@@ -15,37 +15,37 @@ from dotenv import load_dotenv
 
 def check_environment():
     """Check if environment is properly configured"""
-    print("🔍 Checking Environment Configuration...")
+    print("[INFO] Checking Environment Configuration...")
     
     # Load environment variables
     load_dotenv()
     
     # Check if .env file exists
     if not os.path.exists('.env'):
-        print("❌ .env file not found!")
-        print("📝 Please create a .env file with your GOOGLE_API_KEY")
-        print("💡 You can copy .env.example to .env and add your API key")
+        print("[ERROR] .env file not found!")
+        print("[INFO] Please create a .env file with your GOOGLE_API_KEY")
+        print("[TIP] You can copy .env.example to .env and add your API key")
         return False
     
     # Check API key
     api_key = os.getenv('GOOGLE_API_KEY')
     if not api_key:
-        print("❌ GOOGLE_API_KEY not found in environment!")
-        print("📝 Please add your Google API key to the .env file")
+        print("[ERROR] GOOGLE_API_KEY not found in environment!")
+        print("[INFO] Please add your Google API key to the .env file")
         return False
     
     if not api_key.startswith('AIza'):
-        print("⚠️ API key format looks incorrect (should start with 'AIza')")
-        print("🔑 Please verify your Google API key")
+        print("[WARNING] API key format looks incorrect (should start with 'AIza')")
+        print("[INFO] Please verify your Google API key")
         return False
     
-    print(f"✅ Environment configured correctly")
-    print(f"🔑 API Key: {api_key[:10]}...{api_key[-5:]}")
+    print(f"[SUCCESS] Environment configured correctly")
+    print(f"[INFO] API Key: {api_key[:10]}...{api_key[-5:]}")
     return True
 
 def check_dependencies():
     """Check if all required dependencies are installed"""
-    print("\n📦 Checking Dependencies...")
+    print("\n[INFO] Checking Dependencies...")
     
     required_packages = [
         'flask', 'flask-restx', 'flask-limiter', 'flask-cors',
@@ -75,17 +75,17 @@ def check_dependencies():
             missing_packages.append(package)
     
     if missing_packages:
-        print(f"❌ Missing packages: {', '.join(missing_packages)}")
-        print("📝 Please install missing packages with:")
+        print(f"[ERROR] Missing packages: {', '.join(missing_packages)}")
+        print("[INFO] Please install missing packages with:")
         print("   pip install -r requirements.txt")
         return False
     
-    print("✅ All dependencies are installed")
+    print("[SUCCESS] All dependencies are installed")
     return True
 
 def run_direct_wrapper_test():
     """Test the wrapper functions directly (fastest test)"""
-    print("\n🧪 Running Direct Wrapper Test...")
+    print("\n[TEST] Running Direct Wrapper Test...")
     
     try:
         from gemini_wrapper import generate_text
@@ -93,14 +93,14 @@ def run_direct_wrapper_test():
         # Quick test
         result = generate_text("Say 'Hello World' in one sentence.")
         if result and len(result) > 0:
-            print(f"✅ Direct wrapper test passed: {result[:50]}...")
+            print(f"[SUCCESS] Direct wrapper test passed: {result[:50]}...")
             return True
         else:
-            print("❌ Direct wrapper test failed: Empty response")
+            print("[ERROR] Direct wrapper test failed: Empty response")
             return False
             
     except Exception as e:
-        print(f"❌ Direct wrapper test failed: {e}")
+        print(f"[ERROR] Direct wrapper test failed: {e}")
         return False
 
 def run_unit_tests():
@@ -242,27 +242,27 @@ def run_example_usage():
 
 def main():
     """Main test runner function"""
-    print("🚀 Multi-Task LLM API Test Runner")
+    print("Multi-Task LLM API Test Runner")
     print("=" * 50)
     
     # Check environment
     if not check_environment():
-        print("\n❌ Environment check failed!")
+        print("\n[ERROR] Environment check failed!")
         return False
     
     # Check dependencies
     if not check_dependencies():
-        print("\n❌ Dependency check failed!")
+        print("\n[ERROR] Dependency check failed!")
         return False
     
     # Run direct wrapper test (fastest)
     if not run_direct_wrapper_test():
-        print("\n❌ Direct wrapper test failed!")
-        print("🔧 This usually indicates an API key or network issue")
+        print("\n[ERROR] Direct wrapper test failed!")
+        print("[INFO] This usually indicates an API key or network issue")
         return False
     
     # Ask user which tests to run
-    print("\n🎯 Choose test type:")
+    print("\n[MENU] Choose test type:")
     print("1. Unit Tests (comprehensive, starts own server)")
     print("2. Example Usage (requires manually starting server)")
     print("3. Both")
@@ -276,7 +276,7 @@ def main():
     
     if choice in ['2', '3']:
         if choice == '2':
-            print("\n⚠️ Please start the server manually in another terminal:")
+            print("\n[INFO] Please start the server manually in another terminal:")
             print("   python app.py")
             input("Press Enter when server is running...")
         
@@ -285,9 +285,9 @@ def main():
     # Summary
     print("\n" + "=" * 50)
     if success:
-        print("🎉 All tests completed successfully!")
+        print("[SUCCESS] All tests completed successfully!")
     else:
-        print("❌ Some tests failed. Check the output above for details.")
+        print("[ERROR] Some tests failed. Check the output above for details.")
     
     return success
 
