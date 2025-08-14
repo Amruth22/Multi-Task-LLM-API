@@ -105,11 +105,34 @@ def run_direct_wrapper_test():
 
 def run_unit_tests():
     """Run the unit tests"""
-    print("\n🚀 Running Unit Tests...")
+    print("\n[INFO] Running Unit Tests...")
     
-    # Try the fixed test file first
-    if os.path.exists('test_unit_fixed.py'):
-        print("📋 Using Windows-compatible test file...")
+    # Try the Windows-compatible test file first
+    if os.path.exists('test_unit_windows.py'):
+        print("[INFO] Using Windows-compatible test file...")
+        try:
+            result = subprocess.run([sys.executable, 'test_unit_windows.py'], 
+                                  capture_output=True, text=True, timeout=300)
+            
+            print("STDOUT:")
+            print(result.stdout)
+            
+            if result.stderr:
+                print("STDERR:")
+                print(result.stderr)
+            
+            return result.returncode == 0
+            
+        except subprocess.TimeoutExpired:
+            print("[ERROR] Tests timed out after 5 minutes")
+            return False
+        except Exception as e:
+            print(f"[ERROR] Error running tests: {e}")
+            return False
+    
+    # Try the fixed test file
+    elif os.path.exists('test_unit_fixed.py'):
+        print("[INFO] Using fixed test file...")
         try:
             result = subprocess.run([sys.executable, 'test_unit_fixed.py'], 
                                   capture_output=True, text=True, timeout=300)
@@ -124,15 +147,15 @@ def run_unit_tests():
             return result.returncode == 0
             
         except subprocess.TimeoutExpired:
-            print("❌ Tests timed out after 5 minutes")
+            print("[ERROR] Tests timed out after 5 minutes")
             return False
         except Exception as e:
-            print(f"❌ Error running tests: {e}")
+            print(f"[ERROR] Error running tests: {e}")
             return False
     
     # Fallback to original test file
     elif os.path.exists('test_unit.py'):
-        print("📋 Using original test file...")
+        print("[INFO] Using original test file...")
         try:
             result = subprocess.run([sys.executable, 'test_unit.py'], 
                                   capture_output=True, text=True, timeout=300)
@@ -147,26 +170,31 @@ def run_unit_tests():
             return result.returncode == 0
             
         except subprocess.TimeoutExpired:
-            print("❌ Tests timed out after 5 minutes")
+            print("[ERROR] Tests timed out after 5 minutes")
             return False
         except Exception as e:
-            print(f"❌ Error running tests: {e}")
+            print(f"[ERROR] Error running tests: {e}")
             return False
     
     else:
-        print("❌ No test files found!")
+        print("[ERROR] No test files found!")
         return False
 
 def run_example_usage():
     """Run the example usage script"""
-    print("\n📋 Running Example Usage Script...")
+    print("\n[INFO] Running Example Usage Script...")
     
-    if not os.path.exists('example_usage.py'):
-        print("❌ example_usage.py not found!")
+    # Try Windows-compatible version first
+    script_name = 'example_usage_windows.py' if os.path.exists('example_usage_windows.py') else 'example_usage.py'
+    
+    if not os.path.exists(script_name):
+        print(f"[ERROR] {script_name} not found!")
         return False
     
+    print(f"[INFO] Using script: {script_name}")
+    
     # First, start the server
-    print("🚀 Starting server for example usage...")
+    print("[INFO] Starting server for example usage...")
     
     try:
         # Start server in background
@@ -179,10 +207,10 @@ def run_example_usage():
         try:
             response = requests.get('http://localhost:8081/api/v1/health', timeout=5)
             if response.status_code == 200:
-                print("✅ Server started successfully")
+                print("[SUCCESS] Server started successfully")
                 
                 # Run example usage
-                result = subprocess.run([sys.executable, 'example_usage.py'], 
+                result = subprocess.run([sys.executable, script_name], 
                                       capture_output=True, text=True, timeout=120)
                 
                 print("Example Usage Output:")
@@ -195,11 +223,11 @@ def run_example_usage():
                 success = result.returncode == 0
                 
             else:
-                print("❌ Server health check failed")
+                print("[ERROR] Server health check failed")
                 success = False
                 
         except requests.exceptions.RequestException as e:
-            print(f"❌ Could not connect to server: {e}")
+            print(f"[ERROR] Could not connect to server: {e}")
             success = False
         
         # Clean up server
@@ -209,7 +237,7 @@ def run_example_usage():
         return success
         
     except Exception as e:
-        print(f"❌ Error running example usage: {e}")
+        print(f"[ERROR] Error running example usage: {e}")
         return False
 
 def main():
