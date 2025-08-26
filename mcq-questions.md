@@ -1,4 +1,4 @@
-# MCQ Questions - Enterprise AI Governance and Compliance
+# MCQ Questions - Multi-Task AI Systems and API Design
 
 ## Instructions
 Choose the best answer for each question. Each question has only one correct answer.
@@ -6,180 +6,180 @@ Choose the best answer for each question. Each question has only one correct ans
 ---
 
 ### Question 1
-What is AI governance in an enterprise context?
+What is a multi-task AI system?
 
-A) The process of training AI models  
-B) A framework for managing AI development, deployment, and monitoring to ensure compliance and ethical use  
-C) The hardware infrastructure for AI systems  
-D) The user interface design for AI applications  
+A) An AI system that runs on multiple computers  
+B) An AI system capable of performing multiple different types of tasks using a single model  
+C) An AI system that processes multiple files simultaneously  
+D) An AI system with multiple user interfaces  
 
 **Answer: B**
 
 ---
 
 ### Question 2
-What is the primary purpose of compliance validation in AI systems?
+What is the main advantage of using a single model for multiple tasks?
 
-A) To improve model accuracy  
-B) To ensure AI systems meet regulatory requirements and organizational standards  
-C) To reduce computational costs  
-D) To increase processing speed  
+A) It uses more memory  
+B) It reduces complexity and resource requirements while maintaining versatility  
+C) It requires more training data  
+D) It only works with specific programming languages  
 
 **Answer: B**
 
 ---
 
 ### Question 3
-What does A/B testing in AI ethics refer to?
+In API design, what does "temperature" typically control in language models?
 
-A) Testing two different user interfaces  
-B) Comparing the ethical performance of different AI models to determine the best option  
-C) Testing with two different datasets  
-D) Comparing two different programming languages  
+A) The processing speed of the model  
+B) The randomness and creativity of the generated output  
+C) The size of the response  
+D) The number of API calls allowed  
 
 **Answer: B**
 
 ---
 
 ### Question 4
-What is the purpose of risk assessment in AI governance?
+Why might you use different temperature settings for different tasks?
 
-A) To calculate financial costs  
-B) To identify and categorize potential risks associated with AI system deployment  
-C) To measure system performance  
-D) To test user satisfaction  
+A) To change the model architecture  
+B) To optimize output quality for specific use cases (e.g., creative vs. deterministic tasks)  
+C) To reduce API costs  
+D) To improve processing speed  
 
 **Answer: B**
 
 ---
 
 ### Question 5
-What is continuous monitoring in the context of AI systems?
+What is the purpose of exponential backoff in API systems?
 
-A) Watching the system 24/7 manually  
-B) Ongoing automated assessment of AI system performance, bias, and compliance  
-C) Monitoring only during business hours  
-D) Checking the system once per month  
+A) To increase processing speed  
+B) To handle rate limits by gradually increasing wait times between retry attempts  
+C) To reduce memory usage  
+D) To improve user interface design  
 
 **Answer: B**
 
 ---
 
 ### Question 6
-What is the role of a governance dashboard in enterprise AI?
+What is Swagger UI primarily used for?
 
-A) To display system logs only  
-B) To provide executive-level visibility into AI system performance, risks, and compliance status  
-C) To show user login statistics  
-D) To monitor network traffic  
+A) Database management  
+B) Interactive API documentation and testing interface  
+C) Code compilation  
+D) User authentication  
 
 **Answer: B**
 
 ---
 
 ### Question 7
-What does "model lineage" refer to in AI governance?
+What is the benefit of having separate endpoints for different AI tasks?
 
-A) The age of the AI model  
-B) Tracking the history, versions, and changes of AI models throughout their lifecycle  
-C) The size of the model file  
-D) The programming language used  
+A) It uses more server resources  
+B) It allows for task-specific optimization and clearer API organization  
+C) It requires more programming languages  
+D) It increases system complexity unnecessarily  
 
 **Answer: B**
 
 ---
 
 ### Question 8
-What is the purpose of audit trails in AI systems?
+In the context of AI APIs, what does "graceful error handling" mean?
 
-A) To improve system performance  
-B) To maintain detailed records of AI system decisions and changes for accountability  
-C) To reduce storage costs  
-D) To speed up processing  
+A) Making the system crash elegantly  
+B) Providing meaningful error messages and maintaining system stability when failures occur  
+C) Ignoring all errors  
+D) Logging errors without responding to users  
 
 **Answer: B**
 
 ---
 
 ### Question 9
-What does "AI explainability" mean in enterprise governance?
+What is the purpose of input validation in AI API endpoints?
 
-A) Making AI systems run faster  
-B) The ability to understand and interpret how AI systems make decisions  
-C) Reducing the complexity of AI models  
-D) Making AI systems cheaper to operate  
+A) To slow down the system  
+B) To ensure incoming data meets required formats and constraints before processing  
+C) To increase memory usage  
+D) To make the code more complex  
 
 **Answer: B**
 
 ---
 
 ### Question 10
-What is the significance of compliance thresholds in AI governance?
+What is the advantage of using environment variables for API configuration?
 
-A) They determine system speed  
-B) They set acceptable limits for bias, fairness, and other ethical metrics  
-C) They control user access  
-D) They manage storage capacity  
+A) They make the code run faster  
+B) They allow secure configuration management without hardcoding sensitive values  
+C) They reduce file sizes  
+D) They improve user interfaces  
 
 **Answer: B**
 
 ---
 
 ### Question 11
-What is the purpose of automated compliance checking?
+What does CORS (Cross-Origin Resource Sharing) enable in web APIs?
 
-A) To reduce manual effort  
-B) To continuously validate that AI systems meet predefined ethical and regulatory standards  
-C) To improve user experience  
-D) To reduce system costs  
+A) Faster data processing  
+B) Web applications from different domains to access the API  
+C) Better error handling  
+D) Reduced server costs  
 
 **Answer: B**
 
 ---
 
 ### Question 12
-What does "AI model retirement" mean in governance?
+What is the purpose of comprehensive unit testing in API development?
 
-A) Upgrading hardware  
-B) The planned process of decommissioning AI models that no longer meet standards  
-C) Reducing model size  
-D) Changing the user interface  
+A) To make the code longer  
+B) To ensure all components work correctly and catch issues before deployment  
+C) To increase development time  
+D) To use more server resources  
 
 **Answer: B**
 
 ---
 
 ### Question 13
-What is the role of stakeholder engagement in AI governance?
+What is the benefit of using a WSGI server like Waitress for production deployment?
 
-A) To reduce development time  
-B) To ensure all relevant parties are involved in AI decision-making and oversight  
-C) To minimize costs  
-D) To improve technical performance  
+A) It makes development easier  
+B) It provides better performance, stability, and security for production environments  
+C) It reduces code complexity  
+D) It eliminates the need for testing  
 
 **Answer: B**
 
 ---
 
 ### Question 14
-What is "AI risk classification" used for?
+What is the purpose of health check endpoints in APIs?
 
-A) Organizing code files  
-B) Categorizing AI systems based on their potential impact and risk level  
-C) Sorting user data  
-D) Managing server resources  
+A) To test user authentication  
+B) To provide a simple way to verify that the API service is running and responsive  
+C) To generate documentation  
+D) To handle file uploads  
 
 **Answer: B**
 
 ---
 
 ### Question 15
-What is the benefit of having standardized AI governance frameworks?
+What is the advantage of using standardized HTTP status codes in API responses?
 
-A) They make systems run faster  
-B) They provide consistent approaches to managing AI risks and compliance across the organization  
-C) They reduce storage requirements  
-D) They improve user interfaces  
+A) They make responses longer  
+B) They provide clear, universally understood indicators of request outcomes  
+C) They increase processing time  
+D) They require more memory  
 
 **Answer: B**
 
@@ -193,4 +193,4 @@ D) They improve user interfaces
 ---
 
 **Total Questions: 15**  
-**Topics Covered:** AI Governance, Compliance Validation, Risk Assessment, Continuous Monitoring, Audit Trails, Model Lineage, and Enterprise AI Management
+**Topics Covered:** Multi-Task AI, API Design, Temperature Settings, Error Handling, Rate Limiting, Documentation, Testing, and Production Deployment
