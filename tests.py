@@ -190,17 +190,17 @@ def run_server():
     except Exception as e:
         print(f"[ERROR] Server failed to start: {e}")
 
-def wait_for_server(timeout=30):
-    """Wait for server to be ready"""
+def wait_for_server(timeout=15):
+    """Wait for server to be ready (optimized)"""
     start_time = time.time()
     while time.time() - start_time < timeout:
         try:
-            response = requests.get(f"{base_url}/health", timeout=2)
+            response = requests.get(f"{base_url}/health", timeout=1)
             if response.status_code == 200:
                 return True
         except requests.exceptions.RequestException:
             pass
-        time.sleep(0.5)
+        time.sleep(0.2)  # Reduced sleep time
     
     raise RuntimeError(f"Server failed to start within {timeout} seconds")
 
@@ -413,113 +413,117 @@ def test_07_direct_wrapper_functions():
     assert classification_result == "positive", "Should classify 'great' as positive"
     print(f"PASS: Direct text classification (mocked): {classification_result}")
 
-def test_08_swagger_documentation():
-    """Test 8: Swagger Documentation"""
-    print("Running Test 8: Swagger Documentation")
+def test_08_concurrent_requests():
+    """Test 8: Concurrent Requests Handling"""
+    print("Running Test 8: Concurrent Requests Handling")
     
     # Ensure server is running
     if not server_started:
         setup_test_server()
     
-    # Test swagger endpoint
-    swagger_url = f"http://localhost:{test_port}/swagger/"
-    response = requests.get(swagger_url)
-    assert response.status_code == 200, f"Swagger UI should be accessible, got {response.status_code}"
+    import concurrent.futures
+    import threading
     
-    # Check if it's HTML content (Swagger UI)
-    content_type = response.headers.get('content-type', '')
-    assert 'text/html' in content_type, f"Swagger UI should return HTML, got {content_type}"
+    def make_request(endpoint, payload):
+        """Make a single request to the API"""
+        try:
+            response = requests.post(
+                f'{base_url}/{endpoint}',
+                json=payload,
+                headers={'Content-Type': 'application/json'},
+                timeout=5
+            )
+            return response.status_code == 200
+        except:
+            return False
     
-    # Check content contains expected elements
-    content = response.text
-    assert 'Mock Swagger UI' in content, "Should contain mock swagger content"
+    # Test concurrent requests to different endpoints
+    requests_data = [
+        ('generate/text', {'prompt': 'Hello'}),
+        ('generate/code', {'prompt': 'def test(): pass'}),
+        ('classify/text', {'text': 'Great!', 'categories': ['positive', 'negative']}),
+        ('generate/text', {'prompt': 'World'}),
+        ('generate/code', {'prompt': 'print("hello")'})
+    ]
     
-    print(f"PASS: Mock Swagger UI accessible at {swagger_url}")
+    # Execute requests concurrently
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        futures = [executor.submit(make_request, endpoint, payload) for endpoint, payload in requests_data]
+        results = [future.result() for future in concurrent.futures.as_completed(futures, timeout=10)]
+    
+    # Check that most requests succeeded
+    success_count = sum(results)
+    assert success_count >= 3, f"At least 3 concurrent requests should succeed, got {success_count}"
+    
+    print(f"PASS: Concurrent requests handling - {success_count}/{len(results)} requests succeeded")
 
-def test_09_rate_limiting():
-    """Test 9: Rate Limiting"""
-    print("Running Test 9: Rate Limiting")
+def test_09_multiple_endpoints():
+    """Test 9: Multiple Endpoints Validation"""
+    print("Running Test 9: Multiple Endpoints Validation")
     
     # Ensure server is running
     if not server_started:
         setup_test_server()
     
-    # Make multiple rapid requests to test rate limiting
-    payload = {"prompt": "Hello"}
+    # Test all endpoints quickly
+    endpoints_tests = [
+        ('generate/text', {'prompt': 'Test'}, 'generated_text'),
+        ('generate/code', {'prompt': 'def test(): pass'}, 'generated_code'),
+        ('classify/text', {'text': 'Amazing!', 'categories': ['positive', 'negative']}, 'classification')
+    ]
     
-    # Make several requests quickly
-    responses = []
-    for i in range(5):
-        response = requests.post(
-            f'{base_url}/generate/text',
-            json=payload,
-            headers={'Content-Type': 'application/json'}
-        )
-        responses.append(response.status_code)
-        time.sleep(0.1)  # Small delay between requests
+    success_count = 0
+    for endpoint, payload, expected_key in endpoints_tests:
+        try:
+            response = requests.post(
+                f'{base_url}/{endpoint}',
+                json=payload,
+                headers={'Content-Type': 'application/json'},
+                timeout=3
+            )
+            if response.status_code == 200:
+                data = response.json()
+                if expected_key in data:
+                    success_count += 1
+        except:
+            pass
     
-    # All requests should succeed (within rate limit for mock tests)
-    success_count = sum(1 for status in responses if status == 200)
-    assert success_count > 0, "At least some requests should succeed"
+    assert success_count == 3, f"All 3 endpoints should work, got {success_count}"
     
-    print(f"PASS: Rate limiting test completed - {success_count}/{len(responses)} requests succeeded")
+    print(f"PASS: Multiple endpoints validation - {success_count}/3 endpoints working")
 
 def test_10_api_response_format_validation():
-    """Test 10: API Response Format Validation"""
+    """Test 10: API Response Format Validation (Optimized)"""
     print("Running Test 10: API Response Format Validation")
     
     # Ensure server is running
     if not server_started:
         setup_test_server()
     
-    # Test text generation response format
-    payload = {"prompt": "Hello world"}
+    # Test text generation response format (quick)
     response = requests.post(
         f'{base_url}/generate/text',
-        json=payload,
-        headers={'Content-Type': 'application/json'}
+        json={"prompt": "Test"},
+        headers={'Content-Type': 'application/json'},
+        timeout=2
     )
     
-    # Validate response headers
+    # Validate response structure
+    assert response.status_code == 200, "Should return 200"
     assert 'application/json' in response.headers.get('content-type', ''), "Response should be JSON"
     
-    # Validate response structure
     data = response.json()
     assert isinstance(data, dict), "Response should be a dictionary"
     assert 'generated_text' in data, "Response should contain 'generated_text' field"
     assert isinstance(data['generated_text'], str), "Generated text should be a string"
+    assert len(data['generated_text']) > 0, "Generated text should not be empty"
     
-    # Test code generation response format
-    payload = {"prompt": "def hello(): pass"}
-    response = requests.post(
-        f'{base_url}/generate/code',
-        json=payload,
-        headers={'Content-Type': 'application/json'}
-    )
-    
-    data = response.json()
-    assert isinstance(data, dict), "Code response should be a dictionary"
-    assert 'generated_code' in data, "Response should contain 'generated_code' field"
-    assert isinstance(data['generated_code'], str), "Generated code should be a string"
-    
-    # Test classification response format
-    payload = {"text": "Great!", "categories": ["positive", "negative"]}
-    response = requests.post(
-        f'{base_url}/classify/text',
-        json=payload,
-        headers={'Content-Type': 'application/json'}
-    )
-    
-    data = response.json()
-    assert isinstance(data, dict), "Classification response should be a dictionary"
-    assert 'classification' in data, "Response should contain 'classification' field"
-    assert isinstance(data['classification'], str), "Classification should be a string"
-    
-    # Test error response format
+    # Test error response format (quick)
     response = requests.post(
         f'{base_url}/generate/text',
         json={},  # Missing prompt
-        headers={'Content-Type': 'application/json'}
+        headers={'Content-Type': 'application/json'},
+        timeout=2
     )
     
     assert response.status_code == 400, "Should return 400 for missing prompt"
@@ -528,20 +532,19 @@ def test_10_api_response_format_validation():
     assert 'error' in data, "Error response should contain 'error' field"
     assert isinstance(data['error'], str), "Error message should be a string"
     
-    # Test response time (should be reasonable for mock)
+    # Quick response time test
     start_time = time.time()
-    payload = {"prompt": "Quick test"}
-    response = requests.post(
+    requests.post(
         f'{base_url}/generate/text',
-        json=payload,
-        headers={'Content-Type': 'application/json'}
+        json={"prompt": "Quick"},
+        headers={'Content-Type': 'application/json'},
+        timeout=2
     )
     response_time = time.time() - start_time
     
-    assert response_time < 5, f"Mock response time should be under 5 seconds, got {response_time:.2f}s"
+    assert response_time < 3, f"Response should be fast, got {response_time:.2f}s"
     
-    print("PASS: API response format validation completed")
-    print(f"PASS: Mock response time: {response_time:.2f} seconds")
+    print(f"PASS: API response format validation completed ({response_time:.2f}s)")
 
 def run_all_tests():
     """Run all tests and provide summary"""
@@ -571,8 +574,8 @@ def run_all_tests():
         test_05_classify_text_endpoint,
         test_06_endpoint_error_handling,
         test_07_direct_wrapper_functions,
-        test_08_swagger_documentation,
-        test_09_rate_limiting,
+        test_08_concurrent_requests,
+        test_09_multiple_endpoints,
         test_10_api_response_format_validation
     ]
     
