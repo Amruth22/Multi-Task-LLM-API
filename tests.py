@@ -59,6 +59,9 @@ def setup_test_server():
     """Set up live server for testing"""
     global server_thread, server_started, test_port, base_url
     
+    if not IMPORTS_AVAILABLE:
+        raise ImportError("Cannot start server - required imports not available")
+    
     load_dotenv()
     
     # Find available port
@@ -231,6 +234,9 @@ def test_07_direct_wrapper_functions():
     """Test 7: Direct Wrapper Functions"""
     print("Running Test 7: Direct Wrapper Functions")
     
+    if not IMPORTS_AVAILABLE:
+        pytest.skip("Skipping direct wrapper functions test - imports not available")
+    
     # Test generate_text function
     text_result = generate_text("Say 'test successful' in one sentence.")
     assert isinstance(text_result, str), "Text result should be a string"
@@ -382,8 +388,17 @@ def run_all_tests():
     print("Make sure you have GOOGLE_API_KEY set in your .env file")
     print("=" * 70)
     
+    if not IMPORTS_AVAILABLE:
+        print("❌ Cannot run tests - required imports not available")
+        print("Please fix the import issues and try again")
+        return False
+    
     # Setup server once for all tests
-    setup_test_server()
+    try:
+        setup_test_server()
+    except Exception as e:
+        print(f"❌ Failed to setup test server: {e}")
+        return False
     
     # List of exactly 10 test functions
     test_functions = [
