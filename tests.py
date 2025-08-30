@@ -6,8 +6,18 @@ import threading
 import requests
 import socket
 from dotenv import load_dotenv
-from app import app
-from gemini_wrapper import generate_text, generate_code, classify_text
+
+# Handle potential import errors gracefully
+try:
+    from app import app
+    from gemini_wrapper import generate_text, generate_code, classify_text
+    IMPORTS_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Import error - {e}")
+    print("This might be due to LangChain version compatibility issues.")
+    print("Please try: pip install --upgrade langchain langchain-google-genai")
+    IMPORTS_AVAILABLE = False
+    app = None
 
 # Global variables for server management
 server_thread = None
